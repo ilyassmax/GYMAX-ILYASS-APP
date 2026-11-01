@@ -19,7 +19,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - uses: android-actions/setup-android@v3
+      # Ubuntu runners already include the Android SDK.  The old setup action
+      # invokes a removed `sdkmanager tools` package and fails before Gradle runs.
       - run: npm ci
         working-directory: frontend
       - run: npx @capacitor/assets generate --android --iconBackgroundColor '#0d0f10' --splashBackgroundColor '#0d0f10'
