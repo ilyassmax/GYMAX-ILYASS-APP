@@ -1,5 +1,5 @@
 /* ============================================================================
-   openGym — design system
+   GYMAX — design system
    ----------------------------------------------------------------------------
    Rebuilt around four rules, each aimed at a specific "generated" tell in the
    previous sheet:
@@ -319,9 +319,9 @@ h4.sec{
   flex:1;text-align:center;padding:8px 2px 9px;border-radius:10px;
   background:none;border:none;transition:background var(--fast);
 }
-.wday .lbl{font-size:11px;color:var(--label-3);font-weight:500;text-transform:uppercase;letter-spacing:.03em}
-.wday .num{font-size:17px;font-weight:400;margin:4px 0;letter-spacing:-.012em}
-.wday .dot{width:5px;height:5px;border-radius:50%;background:transparent;margin:0 auto}
+.wday .lbl{display:block;font-size:11px;color:var(--label-3);font-weight:500;text-transform:uppercase;letter-spacing:.03em}
+.wday .num{display:block;font-size:17px;font-weight:400;margin:4px 0;letter-spacing:-.012em}
+.wday .dot{display:block;width:5px;height:5px;border-radius:50%;background:transparent;margin:0 auto}
 .wday .dot.plan{background:var(--label-3)}
 .wday .dot.ovr{background:var(--orange)}
 .wday .dot.done{background:var(--acc)}
@@ -331,6 +331,19 @@ h4.sec{
   width:31px;height:31px;border-radius:50%;display:flex;align-items:center;
   justify-content:center;margin:2px auto;
 }
+.week-reset{
+  color:var(--acc);font-size:13px;font-weight:600;padding:5px 9px;border-radius:8px;
+  transition:background var(--fast);
+}
+.week-reset:active{background:var(--acc-soft)}
+.week-progress{margin-top:12px}
+.week-progress-meta{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  color:var(--label-3);font-size:12px;line-height:1.2;
+}
+.week-progress-meta strong{color:var(--label-2);font-weight:600}
+.week-progress-track{height:5px;margin-top:7px;border-radius:99px;background:var(--surface-3);overflow:hidden}
+.week-progress-track i{display:block;height:100%;border-radius:inherit;background:var(--acc);transition:width var(--med) var(--ease)}
 
 /* ----------------------------------------------------------------- list -- */
 .list{display:flex;flex-direction:column;gap:8px}
@@ -881,11 +894,13 @@ h4.sec{
   transition:background var(--fast);width:100%;text-align:left;
 }
 .today-row:active{background:var(--surface-3)}
-.today-row .lbl2{font-size:11px;font-weight:500;letter-spacing:.03em;text-transform:uppercase;color:var(--label-3)}
+.today-row .lbl2{display:block;font-size:11px;font-weight:500;letter-spacing:.03em;text-transform:uppercase;color:var(--label-3)}
 .today-row .ttl{
-  font-weight:500;font-size:17px;line-height:1.25;text-transform:capitalize;
+  display:block;font-weight:500;font-size:17px;line-height:1.25;text-transform:capitalize;
   letter-spacing:-.012em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;
 }
+.streak-card{width:100%;text-align:left;transition:background var(--fast)}
+.streak-card:active{background:var(--surface-2)}
 
 /* --------------------------------------------------- desktop (≥1000px) --- */
 .cols{display:block}

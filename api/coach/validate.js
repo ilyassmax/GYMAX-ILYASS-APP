@@ -151,6 +151,8 @@ export function validatePlan(data, ctx = {}) {
   return {
     ok: true,
     bundle: {
+      gymax_plan: 1,
+      // The legacy marker keeps Coach-created plans importable in the upstream app too.
       opengym_plan: 1,
       name: clampStr(data.name || 'Coach plan', 40),
       summary: clampStr(data.summary || '', 1200),

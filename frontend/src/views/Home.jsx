@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { effectiveRoutine, effectiveRoutineId, streakWeeks, lastBW, setsDoneActive } from '../lib/history.js'
+import { effectiveRoutine, effectiveRoutineId, streakWeeks, lastBW } from '../lib/history.js'
 import { fmtNum, fmtDate, todayISO, isoOf, weekKey, DAYS } from '../lib/format.js'
 import { t, dateLocale } from '../lib/i18n.js'
 import { bwSheet, goalSheet, dayOverrideSheet, calendarSheet, startFlow, loadStarterPlan, bwDeltaColor } from '../sheets.jsx'
@@ -22,20 +22,20 @@ function CoachCard({ nav }) {
   if (!hasConsent(S) || (!job && !pending)) return null
   const ready = !!pending
   return <div className="card" style={ready ? { borderColor: 'var(--acc)' } : null}>
-    <div className="today-row" onClick={() => nav(ready ? '/coach/proposal' : '/coach')}>
-      <div className="row" style={{ gap: 9, minWidth: 0 }}>
+    <button type="button" className="today-row" onClick={() => nav(ready ? '/coach/proposal' : '/coach')}>
+      <span className="row" style={{ gap: 9, minWidth: 0 }}>
         <span className="lrow-i" style={{ background: ready ? 'var(--acc)' : 'var(--orange)' }}><Icon name="sparkles" /></span>
-        <div style={{ minWidth: 0 }}>
-          <div className="lbl2">{t('Coach')}</div>
-          <div className="ttl">{ready
+        <span style={{ minWidth: 0 }}>
+          <span className="lbl2">{t('Coach')}</span>
+          <span className="ttl">{ready
             ? (pending.kind === 'create'
               ? t('Your plan is ready')
               : t(pending.changes?.length === 1 ? '{0} suggestion for you' : '{0} suggestions for you', pending.changes?.length || 0))
-            : t('Reading your training…')}</div>
-        </div>
-      </div>
+            : t('Reading your training…')}</span>
+        </span>
+      </span>
       {ready ? <span className="tag acc">{t('Review')}</span> : <Icon name="chevronRight" className="chev" />}
-    </div>
+    </button>
   </div>
 }
 
@@ -58,16 +58,24 @@ export default function Home() {
   const monday = new Date(today); monday.setDate(today.getDate() - ((today.getDay() + 6) % 7) + weekOffset * 7)
   const doneDays = new Set(S.workouts.map(w => w.d))
   const strip = []
+  let plannedDays = 0
+  let completedPlannedDays = 0
   for (let i = 0; i < 7; i++) {
     const d = new Date(monday); d.setDate(monday.getDate() + i)
     const iso = isoOf(d)
     const eff = effectiveRoutineId(S, iso), ovr = S.dayPlan[iso] !== undefined, done = doneDays.has(iso)
     const dot = done ? ' done' : ovr && eff ? ' ovr' : eff ? ' plan' : ''
-    strip.push(<div key={i} className={'wday' + (iso === todayISO() ? ' today' : '')} onClick={() => dayOverrideSheet(iso)}>
-      <div className="lbl">{t(DAYS[d.getDay()])}</div><div className="num">{d.getDate()}</div><div className={'dot' + dot} /></div>)
+    if (eff) plannedDays++
+    if (eff && done) completedPlannedDays++
+    const dateLabel = d.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })
+    strip.push(<button key={i} type="button" className={'wday' + (iso === todayISO() ? ' today' : '')}
+      onClick={() => dayOverrideSheet(iso)} aria-label={dateLabel} aria-current={iso === todayISO() ? 'date' : undefined}>
+      <span className="lbl">{t(DAYS[d.getDay()])}</span><span className="num">{d.getDate()}</span><span className={'dot' + dot} />
+    </button>)
   }
   const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6)
   const wkLabel = weekOffset === 0 ? t('This week') : `${monday.getDate()} ${monday.toLocaleDateString(dateLocale(), { month: 'short' })} – ${sunday.getDate()} ${sunday.toLocaleDateString(dateLocale(), { month: 'short' })}`
+  const weekProgress = plannedDays ? Math.round((completedPlannedDays / plannedDays) * 100) : 0
 
   const wThisWeek = S.workouts.filter(w => weekKey(w.d) === weekKey(todayISO())).length
   const plannedPerWeek = Object.keys(S.week).filter(k => S.week[k]).length
@@ -84,25 +92,32 @@ export default function Home() {
 
     <div className="card">
       <div className="row between" style={{ marginBottom: 8 }}>
-        <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 15 }} onClick={() => setWeekOffset(w => w - 1)} aria-label="Previous week"><Icon name="chevronLeft" /></button>
-        <div className="small muted" style={{ fontWeight: 500 }}>{wkLabel}</div>
-        <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 15 }} onClick={() => setWeekOffset(w => w + 1)} aria-label="Next week"><Icon name="chevronRight" /></button>
+        <button type="button" className="iconbtn" style={{ width: 30, height: 30, fontSize: 15 }} onClick={() => setWeekOffset(w => w - 1)} aria-label={t('Prev')} title={t('Prev')}><Icon name="chevronLeft" /></button>
+        {weekOffset === 0
+          ? <div className="small muted" style={{ fontWeight: 500 }}>{wkLabel}</div>
+          : <button type="button" className="week-reset" onClick={() => setWeekOffset(0)} title={t('This week')}>{wkLabel}</button>}
+        <button type="button" className="iconbtn" style={{ width: 30, height: 30, fontSize: 15 }} onClick={() => setWeekOffset(w => w + 1)} aria-label={t('Next')} title={t('Next')}><Icon name="chevronRight" /></button>
       </div>
       <div className="week">{strip}</div>
-      <div className="today-row" onClick={onToday}>
-        <div className="row" style={{ gap: 9, minWidth: 0 }}>
+      {plannedDays > 0 && <div className="week-progress" role="progressbar" aria-label={wkLabel}
+        aria-valuemin={0} aria-valuemax={plannedDays} aria-valuenow={completedPlannedDays}>
+        <div className="week-progress-meta"><span><strong>{completedPlannedDays} / {plannedDays}</strong> {t('Planned')}</span><span>{weekProgress}%</span></div>
+        <div className="week-progress-track" aria-hidden="true"><i style={{ width: weekProgress + '%' }} /></div>
+      </div>}
+      <button type="button" className="today-row" onClick={onToday}>
+        <span className="row" style={{ gap: 9, minWidth: 0 }}>
           <span className="lrow-i" style={{ background: S.active ? 'var(--orange)' : routine ? 'var(--acc)' : 'var(--surface-3)' }}>
             <Icon name={S.active ? 'timer' : routine ? glyphOf(routine.emoji) : 'moon'} />
           </span>
-          <div style={{ minWidth: 0 }}>
-            <div className="lbl2">{t('Today')}</div>
-            <div className="ttl">{S.active ? t('{0} — in progress', S.active.name) : routine ? routine.name : t('Rest day')}{todayOvr && routine ? ' · ' + t('rescheduled') : ''}</div>
-          </div>
-        </div>
+          <span style={{ minWidth: 0 }}>
+            <span className="lbl2">{t('Today')}</span>
+            <span className="ttl">{S.active ? t('{0} — in progress', S.active.name) : routine ? routine.name : t('Rest day')}{todayOvr && routine ? ' · ' + t('rescheduled') : ''}</span>
+          </span>
+        </span>
         {S.active ? <span className="tag" style={{ color: 'var(--orange)', background: 'color-mix(in srgb,var(--orange) 16%,transparent)' }}>{t('Resume')}</span>
           : routine ? <span className="tag acc">{t('Start')}</span>
           : <Icon name="plus" className="chev" />}
-      </div>
+      </button>
     </div>
 
     {coachOn && <CoachCard nav={nav} />}
@@ -153,17 +168,17 @@ export default function Home() {
       </> : <div className="muted small">{t("No entries yet — log your weight to start the curve. It's also asked before every workout.")}</div>}
     </div>
 
-    <div className="card tappable" style={{ cursor: 'pointer' }} onClick={() => calendarSheet()}>
-      <div className="row between">
-        <div>
-          <div className="row" style={{ gap: 7, fontSize: 22, fontWeight: 600, letterSpacing: '-.021em' }}>
+    <button type="button" className="card streak-card" onClick={() => calendarSheet()}>
+      <span className="row between">
+        <span>
+          <span className="row" style={{ gap: 7, fontSize: 22, fontWeight: 600, letterSpacing: '-.021em' }}>
             <Icon name="flame" style={{ color: 'var(--orange)' }} />
             {t('{0} week streak', streakWeeks(S))}
-          </div>
-          <div className="muted small" style={{ marginTop: 2 }}>{wThisWeek}{plannedPerWeek ? ' / ' + plannedPerWeek : ''} {t('this week')} · {t(S.workouts.length === 1 ? '{0} workout total' : '{0} workouts total', S.workouts.length)}</div>
-        </div>
+          </span>
+          <span className="muted small" style={{ marginTop: 2, display: 'block' }}>{wThisWeek}{plannedPerWeek ? ' / ' + plannedPerWeek : ''} {t('this week')} · {t(S.workouts.length === 1 ? '{0} workout total' : '{0} workouts total', S.workouts.length)}</span>
+        </span>
         <Icon name="calendar" className="chev" style={{ fontSize: 20 }} />
-      </div>
-    </div>
+      </span>
+    </button>
   </div>
 }

@@ -442,7 +442,7 @@ export default {
   'Use this weekly schedule': 'Использовать это расписание недели',
   'Replaces your current Mon–Sun assignments.': 'Заменяет твоё текущее распределение пн–вс.',
   'Added {0} routines to your plan': 'В твой план добавлено программ: {0}',
-  'this isn’t an GYMAX plan file': 'это не файл плана GYMAX',
+  'This isn’t a GYMAX plan file': 'это не файл плана GYMAX',
   'Shared routine': 'Общая программа',
   'Unknown exercise': 'Неизвестное упражнение',
   'Weekly Training Plan': 'Недельный план тренировок',

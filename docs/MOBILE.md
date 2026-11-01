@@ -1,6 +1,6 @@
-# Building the mobile app (iOS / Android)
+# Building GYMAX for mobile (iOS / Android)
 
-openGym ships in two flavors from the same codebase:
+GYMAX ships in two flavors from the same codebase:
 
 | | **Self-hosted** (this repo's default) | **Mobile app** (`VITE_MOBILE=1`) |
 |---|---|---|
@@ -11,10 +11,14 @@ openGym ships in two flavors from the same codebase:
 | Exercise media | served by your server (`img/`, `gif/`) | loaded from the jsDelivr CDN |
 
 The mobile flavor never talks to a backend: no sign-in screen, no sync, no telemetry.
-State is mirrored from `localStorage` into `opengym-state.json` in the app's private data
+State is mirrored from `localStorage` into `gymax-state.json` in the app's private data
 directory on every change (iOS is allowed to evict WebView storage under pressure — the
 file mirror is the durable copy and is restored on launch). Backups go out through the
 OS share sheet instead of a browser download.
+
+> **Moving from an older openGym APK?** GYMAX has its own Android application ID, so Android
+> installs it as a separate app. Export a JSON backup from the old app, then import it in
+> GYMAX to carry your plan and history over.
 
 ## Prerequisites
 
@@ -22,7 +26,7 @@ OS share sheet instead of a browser download.
 - **Android:** Android Studio (bundles the SDK). Java 21 for Gradle.
 - **iOS:** a Mac with Xcode 15+ and CocoaPods (`brew install cocoapods`). A free Apple ID
   is enough to run the app on your own iPhone (see below); paid membership is only needed
-  for App Store distribution, which openGym doesn't do.
+  for App Store distribution, which GYMAX doesn't do.
 
 ## Build & run
 

@@ -1,4 +1,4 @@
-package ch.duartesantos.opengym;
+package com.ilyassmax.gymax;
 
 import com.getcapacitor.BridgeActivity;
 

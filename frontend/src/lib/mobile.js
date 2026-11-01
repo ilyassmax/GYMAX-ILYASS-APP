@@ -13,13 +13,22 @@ import { t } from './i18n.js'
 
 export const MOBILE = import.meta.env.VITE_MOBILE === '1'
 
-const FILE = 'opengym-state.json'
+const FILE = 'gymax-state.json'
+const LEGACY_FILE = 'opengym-state.json'
 
 export async function nativeLoad() {
   try {
     const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem')
-    const r = await Filesystem.readFile({ path: FILE, directory: Directory.Data, encoding: Encoding.UTF8 })
-    return JSON.parse(r.data)
+    const read = async path => {
+      try {
+        const r = await Filesystem.readFile({ path, directory: Directory.Data, encoding: Encoding.UTF8 })
+        return JSON.parse(r.data)
+      } catch (e) { return null }
+    }
+    // The first branded build recovers a legacy file when both builds share the same native
+    // storage sandbox. A package-ID migration still needs the JSON backup/import flow.
+    // Persisting after boot writes the GYMAX filename, so this fallback is only a migration.
+    return await read(FILE) || await read(LEGACY_FILE)
   } catch (e) { return null }   // first launch, or unreadable — localStorage copy takes over
 }
 
