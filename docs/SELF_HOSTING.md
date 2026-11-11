@@ -1,6 +1,6 @@
-# Self-hosting openGym
+# Self-hosting GYMAX
 
-openGym is two small containers (a web server and an API) plus a folder of your data.
+GYMAX is two small containers (a web server and an API) plus a folder of your data.
 This guide takes you from "just cloned it" to "using it from my phone over the internet".
 
 ## 1. Run it locally (5 minutes)
@@ -8,17 +8,15 @@ This guide takes you from "just cloned it" to "using it from my phone over the i
 Requirements: [Docker](https://docs.docker.com/get-docker/) with the Compose plugin.
 
 ```bash
-git clone https://github.com/DuarteSantos8/gym-app opengym
-cd opengym
+git clone https://github.com/ilyassmax/GYMAX-ILYASS-APP GYMAX-ILYASS-APP
+cd GYMAX-ILYASS-APP
 cp .env.example .env
-docker compose pull   # prebuilt images from ghcr.io (amd64 + arm64) — or skip and build from source
-docker compose up -d
+docker compose up -d --build
 ```
 
-- First start downloads the exercise images/GIFs (~140 MB) once into `app/img` and `app/gif`.
+- First start downloads the exercise images/GIFs (~140 MB) once into `media/img` and `media/gif`.
 - Open **http://localhost:8080** and create a profile with a passkey.
-- Rather build from source than pull prebuilt images? Skip `docker compose pull` and run
-  `docker compose up -d --build` instead — no Node needed locally either way.
+- Docker builds GYMAX from this repository; no local Node installation is needed.
 
 Check it's healthy:
 
@@ -31,20 +29,20 @@ Logs: `docker compose logs -f`. Stop: `docker compose down`.
 
 ## 2. Understand the passkey requirement (important)
 
-openGym signs you in with **passkeys** (WebAuthn). Browsers enforce two rules:
+GYMAX signs you in with **passkeys** (WebAuthn). Browsers enforce two rules:
 
 1. Passkeys are bound to an exact **hostname** (`RP_ID`).
 2. They only work over **HTTPS** — with one exception: `http://localhost`.
 
 So `http://localhost:8080` works on the machine running Docker, but **another device (your
 phone) cannot use `http://<your-LAN-ip>:8080`** — that's neither localhost nor HTTPS, so the
-passkey prompt won't appear. To use openGym from your phone you need a real HTTPS hostname.
+passkey prompt won't appear. To use GYMAX from your phone you need a real HTTPS hostname.
 
 (You can still open it over LAN in **guest mode**, which stores data only in that browser.)
 
 ## 3. Expose it over HTTPS on your own domain
 
-Put openGym behind something that terminates TLS for a hostname you control, then point it at
+Put GYMAX behind something that terminates TLS for a hostname you control, then point it at
 the `web` container. Pick whichever you already run:
 
 ### Option A — Cloudflare Tunnel (no open ports)
@@ -63,7 +61,7 @@ gym.example.com {
 ### Option C — Traefik / nginx / Nginx Proxy Manager
 
 Route `gym.example.com` (HTTPS) → `web:80` (or `<docker-host>:8080`). Any reverse proxy works —
-openGym only needs the browser to reach it over `https://gym.example.com`.
+GYMAX only needs the browser to reach it over `https://gym.example.com`.
 
 Then set your domain in `.env` and restart:
 
@@ -72,7 +70,7 @@ Then set your domain in `.env` and restart:
 RP_ID=gym.example.com
 ORIGIN=https://gym.example.com
 WEB_PORT=8080
-RP_NAME=openGym
+RP_NAME=GYMAX
 ```
 
 ```bash
@@ -120,7 +118,7 @@ into the project folder. (Individual users can also export their own data as JSO
 
 ## 6. Notifications
 
-openGym can push two kinds of alert to your phone/desktop, even when the app isn't open:
+GYMAX can push two kinds of alert to your phone/desktop, even when the app isn't open:
 rest-timer-over, and a reminder on days you have a workout planned but haven't logged one yet.
 Turn it on per-profile in **Settings → Notifications** (requires a signed-in passkey profile and
 HTTPS — see section 3).
@@ -137,15 +135,7 @@ refuses the lock while the phone is in Low Power Mode.
 
 ## 7. Updating
 
-Running prebuilt images:
-
-```bash
-git pull                    # picks up compose/config changes
-docker compose pull
-docker compose up -d
-```
-
-Building from source instead:
+Update your checkout and rebuild GYMAX:
 
 ```bash
 git pull
@@ -176,9 +166,9 @@ server; that cache is equivalent to a password and must not be exposed to users 
 2. Pick one built-in provider:
    - **Claude Code**: on a trusted computer where you use Claude Code, run `claude setup-token`.
      Complete its normal browser sign-in, copy the printed token, then choose **Add CLI token**
-     in openGym. The token is encrypted at rest and passed only to the isolated Agent SDK job.
+     in GYMAX. The token is encrypted at rest and passed only to the isolated Agent SDK job.
    - **OpenAI Codex CLI**: choose **Sign in with ChatGPT**, then use the link and one-time code
-     on a trusted browser or iPad. This is Codex's device-code login; openGym never receives a
+     on a trusted browser or iPad. This is Codex's device-code login; GYMAX never receives a
      ChatGPT password, API key, browser callback, or access token. Its private CLI cache lives
      in `./data/codex` and is refreshed by Codex itself.
 3. Hit **Test the Coach**. Green means a real round-trip to the selected provider worked.
@@ -240,4 +230,3 @@ act on it.
 | No "Notifications" option in Settings | Requires a signed-in profile and HTTPS (or `localhost`) — guest mode and plain HTTP over LAN can't subscribe. |
 | Day reminder fires at the wrong time | Toggle it off and on in Settings so it re-detects your browser's timezone (also happens automatically on every app load — see section 6). |
 | Want to reset a stuck login | Delete the cookie in your browser; sessions are just signed cookies. |
-| `docker compose pull` fails with "denied" / "unauthorized" | The prebuilt images aren't published yet, or need to be, or the GHCR package is still private — build from source instead (`docker compose up -d --build`). |

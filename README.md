@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/banner.png" alt="openGym" width="720">
+<img src="assets/banner.svg" alt="GYMAX" width="720">
 
 <br>
 
@@ -19,54 +19,31 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 ![Docker](https://img.shields.io/badge/Docker-compose-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![No tracking](https://img.shields.io/badge/telemetry-none-f472b6?style=flat-square)
 <br>
-![GitHub last commit](https://img.shields.io/github/last-commit/DuarteSantos8/openGym?style=flat-square)
-[![GitHub stars](https://img.shields.io/github/stars/DuarteSantos8/openGym?style=flat-square)](https://github.com/DuarteSantos8/openGym/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/DuarteSantos8/openGym?style=flat-square)](https://github.com/DuarteSantos8/openGym/issues)
+![GitHub last commit](https://img.shields.io/github/last-commit/ilyassmax/GYMAX-ILYASS-APP?style=flat-square)
+[![GitHub stars](https://img.shields.io/github/stars/ilyassmax/GYMAX-ILYASS-APP?style=flat-square)](https://github.com/ilyassmax/GYMAX-ILYASS-APP/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/ilyassmax/GYMAX-ILYASS-APP?style=flat-square)](https://github.com/ilyassmax/GYMAX-ILYASS-APP/issues)
 
 </div>
 
 <br>
 
-> ### 🤖 This is a fork — it adds the AI Coach
->
-> A fork of [DuarteSantos8/openGym](https://github.com/DuarteSantos8/openGym) that adds one
-> optional feature: an AI that **designs** your training plan and **revises it from what you
-> actually log**, running on your own server under your own provider account.
->
-> Everything else is upstream openGym. With the Coach switched off, this is byte-for-byte the
-> app it forked from.
->
-> **→ [What it does and how to use it](docs/AI_COACH.md)** ·
-> [Claude setup](Claude-setup-instructions.md) ·
-> [ChatGPT / Codex setup](ChatGPT-setup-instructions.md) ·
-> [design deck (PDF)](openGym_AI_Strategy.pdf)
+## GYMAX
+
+GYMAX is Ilyass's gym and body-weight tracker, with guided workouts, progress tracking,
+and an optional AI Coach for training plans.
+
+**[Download the Android APK](https://github.com/ilyassmax/gymax/releases/download/gymax-1.4.3/GYMAX-Android.apk)** · **[Self-hosting guide](docs/SELF_HOSTING.md)** ·
+**[AI Coach guide](docs/AI_COACH.md)**
+
+The APK download is the existing build published in `ilyassmax/gymax`. Changes to this
+repository require a new build before they appear in the installed app.
 
 <br>
-
-<div align="center">
-<table>
-<tr>
-<td align="center"><img src="assets/screenshots/home.png" alt="Home" width="230"><br><sub><b>Home</b> — today's workout & weight</sub></td>
-<td align="center"><img src="assets/screenshots/workout.png" alt="Workout" width="230"><br><sub><b>Guided workout</b> — animated demos & sets</sub></td>
-<td align="center"><img src="assets/screenshots/stats.png" alt="Stats" width="230"><br><sub><b>Stats</b> — heatmap, charts & PRs</sub></td>
-</tr>
-</table>
-</div>
-
-<div align="center">
-
-### [🌐 opengym.duarte-santos.ch](https://opengym.duarte-santos.ch) · [▶ Try the live demo](https://duartesantos8.github.io/openGym/)
-
-No signup, nothing to install — it runs entirely in your browser on example data.<br>
-<sub>There's no server behind the demo, so passkey sign-in, sync across devices and the
-admin dashboard only exist in a self-hosted instance.</sub>
-
-</div>
 
 ## Why
 
 Most workout apps lock your data behind a login on their servers, nag you to upgrade, or
-disappear when the startup does. openGym is the opposite: **it runs on your box, your data
+disappear when the startup does. GYMAX is the opposite: **it runs on your box, your data
 stays in a folder you control, and it's yours to fork.** It still feels modern — installable
 as a home-screen app, passkey sign-in, offline support, sync across your phone and laptop.
 
@@ -96,24 +73,22 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 - 🌍 **12 languages** — full UI translation (EN, DE, ES, FR, IT, PT, PL, TR, RU, ZH, KO, HI); exercise instructions localized in 10 of them, loaded on demand so the app stays fast
 - 📥 **Bring your history with you** — import from **FitNotes** (Android and iOS), **Strong** and **Hevy**, or body weight straight out of an **Apple Health** export. Exercise names are matched against the library and anything unrecognised becomes one of your own exercises, so nothing in the file is dropped
 - 📦 **Yours to keep** — one-tap JSON export/import, guest mode, **no telemetry**
-- 📱 **Standalone Android app** — the whole tracker as a sideloadable APK: no account, no server, data on the phone, native workout reminders ([download](https://opengym.duarte-santos.ch))
+- 📱 **Standalone Android app** — the whole tracker as a sideloadable APK: no account, no server, data on the phone, native workout reminders ([download](https://github.com/ilyassmax/gymax/releases/download/gymax-1.4.3/GYMAX-Android.apk))
 
 ## Quick start (self-host)
 
 You need [Docker](https://docs.docker.com/get-docker/) with Compose.
 
 ```bash
-git clone https://github.com/DuarteSantos8/openGym
-cd openGym
+git clone https://github.com/ilyassmax/GYMAX-ILYASS-APP
+cd GYMAX-ILYASS-APP
 cp .env.example .env
-docker compose pull   # grab prebuilt images (amd64 + arm64) — skip to build from source instead
-docker compose up -d
+docker compose up -d --build
 ```
 
 Open **http://localhost:8080**, tap **Create profile**, and you're in. First launch downloads
-the exercise media (~140 MB) once. Prefer building the images yourself instead of pulling from
-`ghcr.io`? Drop the `pull` step and run `docker compose up -d --build` — you don't need Node or
-a build step locally either way.
+the exercise media (~140 MB) once. Docker builds GYMAX directly from this repository;
+no local Node installation is required.
 
 > Want it reachable from your phone over the internet with passkeys? You'll need an HTTPS
 > domain — a two-line change in `.env`. See **[docs/SELF_HOSTING.md](docs/SELF_HOSTING.md)**.
@@ -125,8 +100,8 @@ no backend — everything stays on the phone, with native workout-day reminders 
 backups. Self-hosting gets you multi-device sync and profiles for friends & family; the
 mobile app is the install-and-done flavor.
 
-- **Android:** [**download the APK**](https://opengym.duarte-santos.ch) and sideload it —
-  openGym is deliberately not on the Play Store. Or build it yourself: **[docs/MOBILE.md](docs/MOBILE.md)**.
+- **Android:** [**download the APK**](https://github.com/ilyassmax/gymax/releases/download/gymax-1.4.3/GYMAX-Android.apk) and sideload it —
+  GYMAX is deliberately not on the Play Store. Or build it yourself: **[docs/MOBILE.md](docs/MOBILE.md)**.
 - **iPhone:** Apple doesn't allow installing apps outside the App Store, so there is no iOS
   download. Self-host and add it to your home screen from Safari (it's a full PWA), or build
   the native app onto your own device from Xcode — see **[docs/MOBILE.md](docs/MOBILE.md)**.
@@ -166,7 +141,7 @@ All via `.env` (see `.env.example`):
 | `RP_ID`       | Hostname passkeys are bound to                       | `localhost`             |
 | `ORIGIN`      | Full URL the app is served from                      | `http://localhost:8080` |
 | `WEB_PORT`    | Host port for the web UI                             | `8080`                  |
-| `RP_NAME`     | Name shown in the passkey prompt                     | `openGym`               |
+| `RP_NAME`     | Name shown in the passkey prompt                     | `GYMAX`               |
 | `ADMIN_UIDS`  | User ids that get the admin dashboard (comma-separated) | *(none)*             |
 | `INVITE_ONLY` | Require an invite code to create a profile           | *(off)*                 |
 | `COACH_DISABLED` | Force the AI Coach off, whatever the admin dashboard says | *(unset)*        |
@@ -183,7 +158,7 @@ walkthroughs for [Claude](Claude-setup-instructions.md) and [ChatGPT/Codex](Chat
 
 Rough, community-driven — ideas and PRs welcome:
 
-- [x] Standalone mobile app — Android APK to sideload ([download](https://opengym.duarte-santos.ch)); on iOS as a self-hosted PWA (no store listings planned)
+- [x] Standalone mobile app — Android APK to sideload ([download](https://github.com/ilyassmax/gymax/releases/download/gymax-1.4.3/GYMAX-Android.apk)); on iOS as a self-hosted PWA (no store listings planned)
 - [x] Automatic progression programs (linear, Greyskull LP, double progression) with stalls and deloads
 - [x] Estimated 1RM per exercise
 - [ ] Percentage / training-max programming (5/3/1-style) on top of the progression engine
@@ -209,29 +184,25 @@ React, the router and Zustand.
 
 ## Community
 
-- **[Q&A](https://github.com/DuarteSantos8/openGym/discussions/categories/q-a)** — self-hosting
-  help, passkey/login trouble, "how do I…". Most login problems turn out to be an `RP_ID`/`ORIGIN`
-  mismatch.
-- **[Ideas](https://github.com/DuarteSantos8/openGym/discussions/categories/ideas)** — features
-  worth talking through before anyone writes code.
-- **[Show and tell](https://github.com/DuarteSantos8/openGym/discussions/categories/show-and-tell)**
-  — your setup, your plan templates, whatever you built on top.
-- **[Issues](https://github.com/DuarteSantos8/openGym/issues)** — bugs, and work that's already
-  been agreed on.
+Use [Issues](https://github.com/ilyassmax/GYMAX-ILYASS-APP/issues) for bugs, questions, and feature requests.
 
 ## Contributing
 
 Issues and PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Good first issues: more starter
 plans, exercise-data languages, import from other trackers. **A ⭐ helps more people find it.**
 
-openGym is free and stays free: AGPL, no subscription, no paid tier, nothing held back for
-sponsors. If it replaced a paid tracker for you and you want to chip in, the Sponsor button at the
-top of the page is there — a star, a bug report or a PR is worth just as much.
+GYMAX is free and open source. Contributions, bug reports, and feedback are welcome.
+
+## Credits
+
+GYMAX is based on [openGym by Duarte Santos](https://github.com/DuarteSantos8/openGym)
+and the [AI Coach fork by Alex Costa](https://github.com/alexpcosta/opengym).
+Original copyright notices and contributor history are preserved; see [NOTICE.md](NOTICE.md).
 
 ## License
 
 [GNU AGPL v3.0](LICENSE) — free and open source. You can self-host, use, modify and share it;
 if you run a modified version as a network service, you must offer that version's source under
-the same license. Nobody can turn openGym into a closed, proprietary product.
+the same license. Nobody can turn GYMAX into a closed, proprietary product.
 
 Exercise images/GIFs are fetched from the upstream dataset and keep their own terms — see [NOTICE.md](NOTICE.md).

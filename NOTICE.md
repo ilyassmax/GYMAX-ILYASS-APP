@@ -1,5 +1,8 @@
 # Third-party notices
 
+GYMAX is a rebranded derivative maintained by Ilyass. It includes openGym by Duarte Santos
+and the AI Coach contributions from Alex Costa. The original notices below are retained.
+
 openGym — Copyright (C) 2026 Duarte Santos.
 openGym's own code is licensed under the **GNU AGPL v3.0** (see [LICENSE](LICENSE)).
 
